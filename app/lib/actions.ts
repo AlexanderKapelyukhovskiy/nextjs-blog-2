@@ -29,6 +29,21 @@ export type State = {
     message?: string | null;
   };
 
+  export async function createSessionEvent(sessionId: number, eventName: string, eventTime: string) {
+
+    try {
+      await sql`
+        INSERT INTO sessionevents (Sessionid, Eventname, Eventtime)
+        VALUES (${sessionId}, ${eventName}, ${eventTime})
+      `;
+    } catch (error) {
+      return {
+        message: 'Database Error: Failed to Create SessionEvent. ' + error,
+      };
+    }
+
+  }
+
   export async function createInvoice(prevState: State, formData: FormData) {
     // Validate form using Zod
     const validatedFields = CreateInvoice.safeParse({
