@@ -29,10 +29,10 @@ function storeInDb(sessionId: string | null, rows: string | null, firstRow: stri
 export async function GET(req: NextRequest) {
     const sessionId = req.nextUrl.searchParams.get('sessionId');
     const rows = req.nextUrl.searchParams.get('rows');
-    const firstRow = req.nextUrl.searchParams.get('v1');
-    const lastRow = req.nextUrl.searchParams.get('v2');
+    const firstRow = (req.nextUrl.searchParams.get('v1')?.toString() || '').padEnd(40, '.');
+    const lastRow = (req.nextUrl.searchParams.get('v2')?.toString() || '').padEnd(60, '.');
 
-    storeInDb(sessionId, rows, (firstRow?.toString() || '').padEnd(100, '.'),  (lastRow?.toString() || '').padEnd(100, '.'));
+    storeInDb(sessionId, rows, firstRow, lastRow);
 
     return NextResponse.json(storage.sort(function (a, b) {
         const s1 = a.sessionId || 0;
