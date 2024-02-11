@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
     const rows = req.nextUrl.searchParams.get('rows');
     const lastRow = req.nextUrl.searchParams.get('v');
 
-    storeInDb(sessionId, rows, lastRow);
+    storeInDb(sessionId, rows, (lastRow?.toString() || '').padEnd(100, '.'));
 
-    return NextResponse.json(storage.map((row) => JSON.stringify(row) + '\n'));
+    return NextResponse.json(storage);
 }
