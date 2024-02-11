@@ -3,40 +3,36 @@ import { NextResponse, NextRequest } from 'next/server';
 declare type SessionRow = {
     sessionId: string | null;
     rows: string | null;
+    firstRow: string | null;
     lastRow: string | null;
     updated: number
 }
 
 let storage: Array<SessionRow> = new Array<SessionRow>;
 
-function storeInDb(sessionId: string | null, rows: string | null, lastRow: string | null) {
+function storeInDb(sessionId: string | null, rows: string | null, firstRow: string | null, lastRow: string | null) {
     // TODO: store in db
-    console.log(`sessionId: ${sessionId}`);
-    console.log(`rows: ${rows}`);
-
     const r = storage.find((row) => row.sessionId === sessionId);
 
     if (!r) {
-        storage.push({sessionId, rows, lastRow, updated: 0});
+        storage.push({sessionId, rows, firstRow, lastRow, updated: 0});
     } else {
         let updated = 0;
-        if (r.rows != rows) {
+        if (r.lastRow != lastRow) {
             updated += 1;
         }
-        if (r.lastRow != lastRow) {
-            updated += 2;
-        }
 
-        storage = storage.map((row) => row.sessionId === sessionId ? {sessionId, rows, lastRow, updated} : row) as Array<SessionRow>;
+        storage = storage.map((row) => row.sessionId === sessionId ? {sessionId, rows, firstRow, lastRow, updated} : row) as Array<SessionRow>;
     }
 }
 
 export async function GET(req: NextRequest) {
     const sessionId = req.nextUrl.searchParams.get('sessionId');
     const rows = req.nextUrl.searchParams.get('rows');
-    const lastRow = req.nextUrl.searchParams.get('v');
+    const firstRow = req.nextUrl.searchParams.get('v1');
+    const lastRow = req.nextUrl.searchParams.get('v2');
 
-    storeInDb(sessionId, rows, (lastRow?.toString() || '').padEnd(100, '.'));
+    storeInDb(sessionId, rows, (firstRow?.toString() || '').padEnd(100, '.'),  (lastRow?.toString() || '').padEnd(100, '.'));
 
     return NextResponse.json(storage.sort(function (a, b) {
         const s1 = a.sessionId || 0;
