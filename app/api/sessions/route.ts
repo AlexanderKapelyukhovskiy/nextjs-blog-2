@@ -38,5 +38,5 @@ export async function GET(req: NextRequest) {
 
     storeInDb(sessionId, rows, lastRow);
 
-    return NextResponse.json(storage);
+    return NextResponse.json(storage.map((row) => JSON.stringify(row) + '\n'));
 }
