@@ -27,7 +27,7 @@ function storeInDb(sessionId: string | null, rows: string | null, lastRow: strin
             updated += 2;
         }
 
-        storage = storage.map((row) => row.sessionId === sessionId ? {sessionId, row, lastRow, updated} : row) as Array<SessionRow>;
+        storage = storage.map((row) => row.sessionId === sessionId ? {sessionId, rows, lastRow, updated} : row) as Array<SessionRow>;
     }
 }
 
