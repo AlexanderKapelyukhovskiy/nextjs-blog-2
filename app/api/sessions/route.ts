@@ -38,5 +38,14 @@ export async function GET(req: NextRequest) {
 
     storeInDb(sessionId, rows, (lastRow?.toString() || '').padEnd(100, '.'));
 
-    return NextResponse.json(storage);
+    return NextResponse.json(storage.sort(function (a, b) {
+        const s1 = a.sessionId || 0;
+        const s2 = b.sessionId || 0;
+        if (s1 > s2) {
+            return 1;
+        } else if (s2 > s1) {
+            return -1;
+        }
+        return 0;
+    }));
 }
